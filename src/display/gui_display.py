@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-GUI 显示模块 - 使用 QML 实现.
+Mô-đun hiển thị GUI - triển khai bằng QML.
 """
 
 import asyncio
@@ -20,15 +20,15 @@ from src.display.gui_display_model import GuiDisplayModel
 from src.utils.resource_finder import find_assets_dir
 
 
-# 创建兼容的元类
+# Tạo metaclass tương thích
 class CombinedMeta(type(QObject), ABCMeta):
     pass
 
 
 class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
-    """GUI 显示类 - 基于 QML 的现代化界面"""
+    """Lớp hiển thị GUI với giao diện hiện đại dựa trên QML."""
 
-    # 常量定义
+    # Hằng số cấu hình
     EMOTION_EXTENSIONS = (".gif", ".png", ".jpg", ".jpeg", ".webp")
     DEFAULT_WINDOW_SIZE = (880, 560)
     DEFAULT_FONT_SIZE = 12
@@ -38,30 +38,30 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         super().__init__()
         QObject.__init__(self)
 
-        # Qt 组件
+        # Thành phần Qt
         self.app = None
         self.root = None
         self.qml_widget = None
         self.system_tray = None
 
-        # 数据模型
+        # Mô hình dữ liệu
         self.display_model = GuiDisplayModel()
 
-        # 表情管理
+        # Quản lý biểu cảm
         self._emotion_cache = {}
         self._last_emotion_name = None
 
-        # 状态管理
+        # Quản lý trạng thái
         self.auto_mode = False
         self._running = True
         self.current_status = ""
         self.is_connected = True
 
-        # 窗口拖动状态
+        # Trạng thái kéo cửa sổ
         self._dragging = False
         self._drag_position = None
 
-        # 回调函数映射
+        # Bản đồ các hàm gọi lại
         self._callbacks = {
             "button_press": None,
             "button_release": None,
@@ -72,7 +72,7 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         }
 
     # =========================================================================
-    # 公共 API - 回调与更新
+    # API công khai - thiết lập callback và cập nhật
     # =========================================================================
 
     async def set_callbacks(
@@ -84,7 +84,7 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         abort_callback: Optional[Callable] = None,
         send_text_callback: Optional[Callable] = None,
     ):
-        """设置回调函数"""
+        """Thiết lập các hàm gọi lại."""
         self._callbacks.update(
             {
                 "button_press": press_callback,
@@ -97,10 +97,10 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         )
 
     async def update_status(self, status: str, connected: bool):
-        """更新状态文本并处理相关逻辑"""
+        """Cập nhật văn bản trạng thái và xử lý logic liên quan."""
         self.display_model.update_status(status, connected)
 
-        # 跟踪状态变化
+        # Theo dõi biến động trạng thái
         status_changed = status != self.current_status
         connected_changed = bool(connected) != self.is_connected
 
@@ -109,16 +109,16 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         if connected_changed:
             self.is_connected = bool(connected)
 
-        # 更新系统托盘
+        # Cập nhật khay hệ thống
         if (status_changed or connected_changed) and self.system_tray:
             self.system_tray.update_status(status, self.is_connected)
 
     async def update_text(self, text: str):
-        """更新 TTS 文本"""
+        """Cập nhật văn bản TTS."""
         self.display_model.update_text(text)
 
     async def update_emotion(self, emotion_name: str):
-        """更新表情显示"""
+        """Cập nhật hiển thị biểu cảm."""
         if emotion_name == self._last_emotion_name:
             return
 
@@ -127,30 +127,30 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         self.display_model.update_emotion(asset_path)
 
     async def update_button_status(self, text: str):
-        """更新按钮状态"""
+        """Cập nhật trạng thái nút."""
         if self.auto_mode:
             self.display_model.update_button_text(text)
 
     async def toggle_mode(self):
-        """切换对话模式"""
+        """Chuyển đổi chế độ hội thoại."""
         if self._callbacks["mode"]:
             self._on_mode_button_click()
-            self.logger.debug("通过快捷键切换了对话模式")
+            self.logger.debug("Đã chuyển đổi chế độ hội thoại bằng phím tắt")
 
     async def toggle_window_visibility(self):
-        """切换窗口可见性"""
+        """Chuyển đổi trạng thái hiển thị của cửa sổ."""
         if not self.root:
             return
 
         if self.root.isVisible():
-            self.logger.debug("通过快捷键隐藏窗口")
+            self.logger.debug("Đã ẩn cửa sổ bằng phím tắt")
             self.root.hide()
         else:
-            self.logger.debug("通过快捷键显示窗口")
+            self.logger.debug("Đã hiển thị cửa sổ bằng phím tắt")
             self._show_main_window()
 
     async def close(self):
-        """关闭窗口处理"""
+        """Xử lý đóng cửa sổ."""
         self._running = False
         if self.system_tray:
             self.system_tray.hide()
@@ -158,11 +158,11 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
             self.root.close()
 
     # =========================================================================
-    # 启动流程
+    # Quy trình khởi động
     # =========================================================================
 
     async def start(self):
-        """启动 GUI"""
+        """Khởi chạy giao diện GUI."""
         try:
             self._configure_environment()
             self._create_main_window()
@@ -170,16 +170,16 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
             self._setup_interactions()
             await self._finalize_startup()
         except Exception as e:
-            self.logger.error(f"GUI启动失败: {e}", exc_info=True)
+            self.logger.error(f"Khởi chạy GUI thất bại: {e}", exc_info=True)
             raise
 
     def _configure_environment(self):
-        """配置环境"""
+        """Cấu hình môi trường."""
         os.environ.setdefault("QT_LOGGING_RULES", "qt.qpa.fonts.debug=false")
 
         self.app = QApplication.instance()
         if self.app is None:
-            raise RuntimeError("QApplication 未找到，请确保在 qasync 环境中运行")
+            raise RuntimeError("Không tìm thấy QApplication, hãy đảm bảo chạy trong môi trường qasync")
 
         self.app.setQuitOnLastWindowClosed(False)
         self.app.setFont(QFont("PingFang SC", self.DEFAULT_FONT_SIZE))
@@ -188,7 +188,7 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         self._setup_activation_handler()
 
     def _create_main_window(self):
-        """创建主窗口"""
+        """Tạo cửa sổ chính."""
         self.root = QWidget()
         self.root.setWindowTitle("")
         self.root.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
@@ -196,46 +196,46 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         self.root.closeEvent = self._closeEvent
 
     def _load_qml(self):
-        """加载 QML 界面"""
+        """Tải giao diện QML."""
         self.qml_widget = QQuickWidget()
         self.qml_widget.setResizeMode(QQuickWidget.SizeRootObjectToView)
         self.qml_widget.setClearColor(Qt.white)
 
-        # 注册数据模型到 QML 上下文
+        # Đăng ký mô hình dữ liệu vào ngữ cảnh QML
         qml_context = self.qml_widget.rootContext()
         qml_context.setContextProperty("displayModel", self.display_model)
 
-        # 加载 QML 文件
+        # Tải tệp QML
         qml_file = Path(__file__).parent / "gui_display.qml"
         self.qml_widget.setSource(QUrl.fromLocalFile(str(qml_file)))
 
-        # 设置为主窗口的中央 widget
+        # Đặt làm widget trung tâm của cửa sổ chính
         layout = QVBoxLayout(self.root)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.qml_widget)
 
     def _setup_interactions(self):
-        """设置交互（信号、托盘）"""
+        """Thiết lập tương tác (tín hiệu, khay hệ thống)."""
         self._connect_qml_signals()
 
     async def _finalize_startup(self):
-        """完成启动流程"""
+        """Hoàn tất quy trình khởi động."""
         await self.update_emotion("neutral")
         self.root.show()
         self._setup_system_tray()
 
     # =========================================================================
-    # 信号连接
+    # Kết nối tín hiệu
     # =========================================================================
 
     def _connect_qml_signals(self):
-        """连接 QML 信号到 Python 槽"""
+        """Kết nối tín hiệu QML tới slot Python."""
         root_object = self.qml_widget.rootObject()
         if not root_object:
-            self.logger.warning("QML 根对象未找到，无法设置信号连接")
+            self.logger.warning("Không tìm thấy đối tượng gốc QML, không thể thiết lập tín hiệu")
             return
 
-        # 按钮事件信号映射
+        # Ánh xạ tín hiệu sự kiện nút
         button_signals = {
             "manualButtonPressed": self._on_manual_button_press,
             "manualButtonReleased": self._on_manual_button_release,
@@ -246,7 +246,7 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
             "settingsButtonClicked": self._on_settings_button_click,
         }
 
-        # 标题栏控制信号映射
+        # Ánh xạ tín hiệu điều khiển thanh tiêu đề
         titlebar_signals = {
             "titleMinimize": self._minimize_window,
             "titleClose": self._quit_application,
@@ -255,47 +255,47 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
             "titleDragEnd": self._on_title_drag_end,
         }
 
-        # 批量连接信号
+        # Kết nối hàng loạt tín hiệu
         for signal_name, handler in {**button_signals, **titlebar_signals}.items():
             try:
                 getattr(root_object, signal_name).connect(handler)
             except AttributeError:
-                self.logger.debug(f"信号 {signal_name} 不存在（可能是可选功能）")
+                self.logger.debug(f"Tín hiệu {signal_name} không tồn tại (có thể là tính năng tùy chọn)")
 
-        self.logger.debug("QML 信号连接设置完成")
+        self.logger.debug("Hoàn tất thiết lập kết nối tín hiệu QML")
 
     # =========================================================================
-    # 按钮事件处理
+    # Xử lý sự kiện nút
     # =========================================================================
 
     def _on_manual_button_press(self):
-        """手动模式按钮按下"""
+        """Nút chế độ thủ công được nhấn."""
         self._dispatch_callback("button_press")
 
     def _on_manual_button_release(self):
-        """手动模式按钮释放"""
+        """Nút chế độ thủ công được thả."""
         self._dispatch_callback("button_release")
 
     def _on_auto_button_click(self):
-        """自动模式按钮点击"""
+        """Nút chế độ tự động được nhấn."""
         self._dispatch_callback("auto")
 
     def _on_abort_button_click(self):
-        """中止按钮点击"""
+        """Nút ngắt hội thoại được nhấn."""
         self._dispatch_callback("abort")
 
     def _on_mode_button_click(self):
-        """对话模式切换按钮点击"""
+        """Nút chuyển chế độ hội thoại được nhấn."""
         if self._callbacks["mode"] and not self._callbacks["mode"]():
             return
 
         self.auto_mode = not self.auto_mode
-        mode_text = "自动对话" if self.auto_mode else "手动对话"
+        mode_text = "Hội thoại tự động" if self.auto_mode else "Hội thoại thủ công"
         self.display_model.update_mode_text(mode_text)
         self.display_model.set_auto_mode(self.auto_mode)
 
     def _on_send_button_click(self, text: str):
-        """处理发送文本按钮点击"""
+        """Xử lý khi nhấn nút gửi văn bản."""
         text = text.strip()
         if not text or not self._callbacks["send_text"]:
             return
@@ -305,52 +305,52 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
             task.add_done_callback(
                 lambda t: t.cancelled()
                 or not t.exception()
-                or self.logger.error(f"发送文本任务异常: {t.exception()}", exc_info=True)
+                or self.logger.error(f"Nhiệm vụ gửi văn bản gặp lỗi: {t.exception()}", exc_info=True)
             )
         except Exception as e:
-            self.logger.error(f"发送文本时出错: {e}")
+            self.logger.error(f"Gửi văn bản thất bại: {e}")
 
     def _on_settings_button_click(self):
-        """处理设置按钮点击"""
+        """Xử lý khi nhấn nút cài đặt."""
         try:
             from src.views.settings import SettingsWindow
 
             settings_window = SettingsWindow(self.root)
             settings_window.exec_()
         except Exception as e:
-            self.logger.error(f"打开设置窗口失败: {e}", exc_info=True)
+            self.logger.error(f"Không thể mở cửa sổ cấu hình: {e}", exc_info=True)
 
     def _dispatch_callback(self, callback_name: str, *args):
-        """通用回调调度器"""
+        """Bộ điều phối callback dùng chung."""
         callback = self._callbacks.get(callback_name)
         if callback:
             callback(*args)
 
     # =========================================================================
-    # 窗口拖动
+    # Kéo cửa sổ
     # =========================================================================
 
     def _on_title_drag_start(self, _x, _y):
-        """标题栏拖动开始"""
+        """Bắt đầu kéo thanh tiêu đề."""
         self._dragging = True
         self._drag_position = QCursor.pos() - self.root.pos()
 
     def _on_title_drag_move(self, _x, _y):
-        """标题栏拖动移动"""
+        """Kéo thanh tiêu đề trong quá trình di chuyển."""
         if self._dragging and self._drag_position:
             self.root.move(QCursor.pos() - self._drag_position)
 
     def _on_title_drag_end(self):
-        """标题栏拖动结束"""
+        """Kết thúc kéo thanh tiêu đề."""
         self._dragging = False
         self._drag_position = None
 
     # =========================================================================
-    # 表情管理
+    # Quản lý biểu cảm
     # =========================================================================
 
     def _get_emotion_asset_path(self, emotion_name: str) -> str:
-        """获取表情资源文件路径，自动匹配常见后缀"""
+        """Lấy đường dẫn tệp biểu cảm, tự động khớp hậu tố phổ biến."""
         if emotion_name in self._emotion_cache:
             return self._emotion_cache[emotion_name]
 
@@ -359,7 +359,7 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
             path = "😊"
         else:
             emotion_dir = assets_dir / "emojis"
-            # 尝试查找表情文件，失败则回退到 neutral
+            # Thử tìm tệp biểu cảm, thất bại thì quay về neutral
             path = (
                 str(self._find_emotion_file(emotion_dir, emotion_name))
                 or str(self._find_emotion_file(emotion_dir, "neutral"))
@@ -370,7 +370,7 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         return path
 
     def _find_emotion_file(self, emotion_dir: Path, name: str) -> Optional[Path]:
-        """在指定目录查找表情文件"""
+        """Tìm tệp biểu cảm trong thư mục chỉ định."""
         for ext in self.EMOTION_EXTENSIONS:
             file_path = emotion_dir / f"{name}{ext}"
             if file_path.exists():
@@ -378,21 +378,21 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         return None
 
     # =========================================================================
-    # 系统设置
+    # Thiết lập hệ thống
     # =========================================================================
 
     def _setup_signal_handlers(self):
-        """设置信号处理器（Ctrl+C）"""
+        """Thiết lập bộ xử lý tín hiệu (Ctrl+C)."""
         try:
             signal.signal(
                 signal.SIGINT,
                 lambda *_: QTimer.singleShot(0, self._quit_application),
             )
         except Exception as e:
-            self.logger.warning(f"设置信号处理器失败: {e}")
+            self.logger.warning(f"Không thể thiết lập bộ xử lý tín hiệu: {e}")
 
     def _setup_activation_handler(self):
-        """设置应用激活处理器（macOS Dock 图标点击恢复窗口）"""
+        """Thiết lập bộ xử lý kích hoạt ứng dụng (khôi phục cửa sổ khi click Dock macOS)."""
         try:
             import platform
 
@@ -400,19 +400,19 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
                 return
 
             self.app.applicationStateChanged.connect(self._on_application_state_changed)
-            self.logger.debug("已设置应用激活处理器（macOS Dock 支持）")
+            self.logger.debug("Đã thiết lập bộ xử lý kích hoạt ứng dụng (hỗ trợ Dock macOS)")
         except Exception as e:
-            self.logger.warning(f"设置应用激活处理器失败: {e}")
+            self.logger.warning(f"Không thể thiết lập bộ xử lý kích hoạt ứng dụng: {e}")
 
     def _on_application_state_changed(self, state):
-        """应用状态变化处理（macOS Dock 点击时恢复窗口）"""
+        """Xử lý thay đổi trạng thái ứng dụng (khôi phục khi nhấp Dock trên macOS)."""
         if state == Qt.ApplicationActive and self.root and not self.root.isVisible():
             QTimer.singleShot(0, self._show_main_window)
 
     def _setup_system_tray(self):
-        """设置系统托盘"""
+        """Thiết lập khay hệ thống."""
         if os.getenv("XIAOZHI_DISABLE_TRAY") == "1":
-            self.logger.warning("已通过环境变量禁用系统托盘 (XIAOZHI_DISABLE_TRAY=1)")
+            self.logger.warning("Khay hệ thống đã bị vô hiệu qua biến môi trường (XIAOZHI_DISABLE_TRAY=1)")
             return
 
         try:
@@ -420,7 +420,7 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
 
             self.system_tray = SystemTray(self.root)
 
-            # 连接托盘信号（使用 QTimer 确保主线程执行）
+            # Kết nối tín hiệu khay (dùng QTimer để đảm bảo chạy trên luồng chính)
             tray_signals = {
                 "show_window_requested": self._show_main_window,
                 "settings_requested": self._on_settings_button_click,
@@ -433,14 +433,14 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
                 )
 
         except Exception as e:
-            self.logger.error(f"初始化系统托盘组件失败: {e}", exc_info=True)
+            self.logger.error(f"Không thể khởi tạo khay hệ thống: {e}", exc_info=True)
 
     # =========================================================================
-    # 窗口控制
+    # Điều khiển cửa sổ
     # =========================================================================
 
     def _show_main_window(self):
-        """显示主窗口"""
+        """Hiển thị cửa sổ chính."""
         if not self.root:
             return
 
@@ -452,13 +452,13 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
         self.root.raise_()
 
     def _minimize_window(self):
-        """最小化窗口"""
+        """Thu nhỏ cửa sổ."""
         if self.root:
             self.root.showMinimized()
 
     def _quit_application(self):
-        """退出应用程序"""
-        self.logger.info("开始退出应用程序...")
+        """Thoát ứng dụng."""
+        self.logger.info("Bắt đầu thoát ứng dụng...")
         self._running = False
 
         if self.system_tray:
@@ -477,19 +477,19 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
                 QApplication.quit()
                 return
 
-            # 创建关闭任务并设置超时
+            # Tạo tác vụ đóng và thiết lập thời gian chờ
             shutdown_task = asyncio.create_task(app.shutdown())
 
             def on_shutdown_complete(task):
                 if not task.cancelled() and task.exception():
-                    self.logger.error(f"应用程序关闭异常: {task.exception()}")
+                    self.logger.error(f"Đóng ứng dụng gặp lỗi: {task.exception()}")
                 else:
-                    self.logger.info("应用程序正常关闭")
+                    self.logger.info("Ứng dụng đã đóng bình thường")
                 QApplication.quit()
 
             def force_quit():
                 if not shutdown_task.done():
-                    self.logger.warning("关闭超时，强制退出")
+                    self.logger.warning("Đóng vượt quá thời gian, buộc thoát")
                     shutdown_task.cancel()
                 QApplication.quit()
 
@@ -497,17 +497,17 @@ class GuiDisplay(BaseDisplay, QObject, metaclass=CombinedMeta):
             QTimer.singleShot(self.QUIT_TIMEOUT_MS, force_quit)
 
         except Exception as e:
-            self.logger.error(f"关闭应用程序失败: {e}")
+            self.logger.error(f"Không thể đóng ứng dụng: {e}")
             QApplication.quit()
 
     def _closeEvent(self, event):
-        """处理窗口关闭事件"""
-        # 如果系统托盘可用，最小化到托盘
+        """Xử lý sự kiện đóng cửa sổ."""
+        # Nếu khay hệ thống khả dụng, thu nhỏ xuống khay
         if self.system_tray and (
             getattr(self.system_tray, "is_available", lambda: False)()
             or getattr(self.system_tray, "is_visible", lambda: False)()
         ):
-            self.logger.info("关闭窗口：最小化到托盘")
+            self.logger.info("Đóng cửa sổ: thu nhỏ xuống khay")
             QTimer.singleShot(0, self.root.hide)
             event.ignore()
         else:

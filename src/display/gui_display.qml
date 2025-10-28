@@ -9,7 +9,7 @@ Rectangle {
     height: 500
     color: "#f5f5f5"
 
-    // 信号定义 - 与 Python 回调对接
+    // Định nghĩa tín hiệu - nối với callback Python
     signal manualButtonPressed()
     signal manualButtonReleased()
     signal autoButtonClicked()
@@ -17,20 +17,20 @@ Rectangle {
     signal modeButtonClicked()
     signal sendButtonClicked(string text)
     signal settingsButtonClicked()
-    // 标题栏相关信号
+    // Tín hiệu liên quan tới thanh tiêu đề
     signal titleMinimize()
     signal titleClose()
     signal titleDragStart(real mouseX, real mouseY)
     signal titleDragMoveTo(real mouseX, real mouseY)
     signal titleDragEnd()
 
-    // 主布局
+    // Bố cục chính
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 0
         spacing: 0
 
-        // 自定义标题栏：最小化、关闭、可拖动
+        // Thanh tiêu đề tùy chỉnh: thu nhỏ, đóng và kéo được
         Rectangle {
             id: titleBar
             Layout.fillWidth: true
@@ -38,8 +38,8 @@ Rectangle {
             color: "#f7f8fa"
             border.width: 0
 
-            // 整条标题栏拖动（使用屏幕坐标，避免累计误差导致抖动）
-            // 放在最底层，让按钮的 MouseArea 可以优先响应
+            // Kéo toàn bộ thanh tiêu đề (dùng tọa độ màn hình để tránh sai lệch tích lũy)
+            // Đặt ở lớp thấp nhất để MouseArea của nút phản hồi trước
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton
@@ -54,7 +54,7 @@ Rectangle {
                 onReleased: {
                     root.titleDragEnd()
                 }
-                z: 0  // 最底层
+                z: 0  // Lớp thấp nhất
             }
 
             RowLayout {
@@ -62,17 +62,17 @@ Rectangle {
                 anchors.leftMargin: 10
                 anchors.rightMargin: 8
                 spacing: 8
-                z: 1  // 按钮层在拖动层上方
+                z: 1  // Lớp nút nằm trên lớp kéo
 
-                // 左侧拖动区域
+                // Khu vực kéo ở bên trái
                 Item { id: dragArea; Layout.fillWidth: true; Layout.fillHeight: true }
 
-                // 最小化
+                // Thu nhỏ
                 Rectangle {
                     id: btnMin
                     width: 24; height: 24; radius: 6
                     color: btnMinMouse.pressed ? "#e5e6eb" : (btnMinMouse.containsMouse ? "#f2f3f5" : "transparent")
-                    z: 2  // 确保按钮在最上层
+                    z: 2  // Đảm bảo nút ở lớp trên cùng
                     Text { anchors.centerIn: parent; text: "–"; font.pixelSize: 14; color: "#4e5969" }
                     MouseArea {
                         id: btnMinMouse
@@ -82,12 +82,12 @@ Rectangle {
                     }
                 }
 
-                // 关闭
+                // Đóng
                 Rectangle {
                     id: btnClose
                     width: 24; height: 24; radius: 6
                     color: btnCloseMouse.pressed ? "#f53f3f" : (btnCloseMouse.containsMouse ? "#ff7875" : "transparent")
-                    z: 2  // 确保按钮在最上层
+                    z: 2  // Đảm bảo nút ở lớp trên cùng
                     Text { anchors.centerIn: parent; text: "×"; font.pixelSize: 14; color: btnCloseMouse.containsMouse ? "white" : "#86909c" }
                     MouseArea {
                         id: btnCloseMouse
@@ -99,7 +99,7 @@ Rectangle {
             }
         }
 
-        // 状态卡片区域
+        // Khu vực thẻ trạng thái
         Rectangle {
             id: statusCard
             Layout.fillWidth: true
@@ -111,7 +111,7 @@ Rectangle {
                 anchors.margins: 20
                 spacing: 20
 
-                // 状态标签
+                // Nhãn trạng thái
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 48
@@ -120,7 +120,7 @@ Rectangle {
 
                     Text {
                         anchors.centerIn: parent
-                        text: displayModel ? displayModel.statusText : "状态: 未连接"
+                        text: displayModel ? displayModel.statusText : "Trạng thái: Chưa kết nối"
                         font.family: "PingFang SC, Microsoft YaHei UI"
                         font.pixelSize: 14
                         font.weight: Font.Bold
@@ -128,13 +128,13 @@ Rectangle {
                     }
                 }
 
-                // 表情显示区域
+                // Khu vực hiển thị biểu cảm
                 Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.minimumHeight: 120
 
-                    // 动态加载表情：AnimatedImage 用于 GIF，Image 用于静态图，Text 用于 emoji
+                    // Nạp biểu cảm động: AnimatedImage cho GIF, Image cho ảnh tĩnh, Text cho emoji
                     Loader {
                         id: emotionLoader
                         anchors.centerIn: parent
@@ -155,7 +155,7 @@ Rectangle {
                             return emojiComponent
                         }
 
-                        // GIF 动图组件
+                        // Thành phần ảnh động GIF
                         Component {
                             id: gifComponent
                             AnimatedImage {
@@ -167,7 +167,7 @@ Rectangle {
                             }
                         }
 
-                        // 静态图片组件
+                        // Thành phần ảnh tĩnh
                         Component {
                             id: imageComponent
                             Image {
@@ -177,7 +177,7 @@ Rectangle {
                             }
                         }
 
-                        // Emoji 文本组件
+                        // Thành phần emoji dạng văn bản
                         Component {
                             id: emojiComponent
                             Text {
@@ -190,7 +190,7 @@ Rectangle {
                     }
                 }
 
-                // TTS 文本显示区域
+                // Khu vực hiển thị văn bản TTS
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 80
@@ -199,7 +199,7 @@ Rectangle {
                     Text {
                         anchors.fill: parent
                         anchors.margins: 15
-                        text: displayModel ? displayModel.ttsText : "待命"
+                        text: displayModel ? displayModel.ttsText : "Sẵn sàng"
                         font.family: "PingFang SC, Microsoft YaHei UI"
                         font.pixelSize: 14
                         color: "#555555"
@@ -211,7 +211,7 @@ Rectangle {
             }
         }
 
-        // 按钮区域（统一配色与尺寸）
+        // Khu vực nút (màu sắc và kích thước đồng bộ)
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 72
@@ -224,12 +224,12 @@ Rectangle {
                 anchors.bottomMargin: 12
                 spacing: 10
 
-                // 手动模式按钮（按住说话） - 主色
+                // Nút chế độ thủ công (nhấn giữ để nói) - màu chính
                 Button {
                     id: manualBtn
                     Layout.preferredWidth: 140
                     Layout.preferredHeight: 40
-                    text: "按住后说话"
+                    text: "Nhấn giữ để nói"
                     visible: displayModel ? !displayModel.autoMode : true
 
                     background: Rectangle {
@@ -248,16 +248,16 @@ Rectangle {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    onPressed: { manualBtn.text = "松开以停止"; root.manualButtonPressed() }
-                    onReleased: { manualBtn.text = "按住后说话"; root.manualButtonReleased() }
+                    onPressed: { manualBtn.text = "Thả để dừng"; root.manualButtonPressed() }
+                    onReleased: { manualBtn.text = "Nhấn giữ để nói"; root.manualButtonReleased() }
                 }
 
-                // 自动模式按钮 - 主色
+                // Nút chế độ tự động - màu chính
                 Button {
                     id: autoBtn
                     Layout.preferredWidth: 140
                     Layout.preferredHeight: 40
-                    text: displayModel ? displayModel.buttonText : "开始对话"
+                    text: displayModel ? displayModel.buttonText : "Bắt đầu hội thoại"
                     visible: displayModel ? displayModel.autoMode : false
 
                     background: Rectangle {
@@ -270,19 +270,19 @@ Rectangle {
                     onClicked: root.autoButtonClicked()
                 }
 
-                // 打断对话 - 次要色
+                // Ngắt hội thoại - màu phụ
                 Button {
                     id: abortBtn
                     Layout.preferredWidth: 120
                     Layout.preferredHeight: 40
-                    text: "打断对话"
+                    text: "Ngắt hội thoại"
 
                     background: Rectangle { color: abortBtn.pressed ? "#e5e6eb" : (abortBtn.hovered ? "#f2f3f5" : "#eceff3"); radius: 8 }
                     contentItem: Text { text: abortBtn.text; font.family: "PingFang SC, Microsoft YaHei UI"; font.pixelSize: 13; color: "#1d2129"; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                     onClicked: root.abortButtonClicked()
                 }
 
-                // 输入 + 发送
+                // Nhập và gửi
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 40
@@ -308,8 +308,8 @@ Rectangle {
                             selectByMouse: true
                             clip: true
 
-                            // 占位符
-                            Text { anchors.fill: parent; text: "输入文字..."; font: textInput.font; color: "#c9cdd4"; verticalAlignment: Text.AlignVCenter; visible: !textInput.text && !textInput.activeFocus }
+                            // Văn bản gợi ý
+                            Text { anchors.fill: parent; text: "Nhập nội dung..."; font: textInput.font; color: "#c9cdd4"; verticalAlignment: Text.AlignVCenter; visible: !textInput.text && !textInput.activeFocus }
 
                             Keys.onReturnPressed: { if (textInput.text.trim().length > 0) { root.sendButtonClicked(textInput.text); textInput.text = "" } }
                         }
@@ -319,30 +319,30 @@ Rectangle {
                         id: sendBtn
                         Layout.preferredWidth: 84
                         Layout.preferredHeight: 40
-                        text: "发送"
+                        text: "Gửi"
                         background: Rectangle { color: sendBtn.pressed ? "#0e42d2" : (sendBtn.hovered ? "#4080ff" : "#165dff"); radius: 8 }
                         contentItem: Text { text: sendBtn.text; font.family: "PingFang SC, Microsoft YaHei UI"; font.pixelSize: 13; color: "white"; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                         onClicked: { if (textInput.text.trim().length > 0) { root.sendButtonClicked(textInput.text); textInput.text = "" } }
                     }
                 }
 
-                // 模式（次要）
+                // Chế độ (màu phụ)
                 Button {
                     id: modeBtn
                     Layout.preferredWidth: 120
                     Layout.preferredHeight: 40
-                    text: displayModel ? displayModel.modeText : "手动对话"
+                    text: displayModel ? displayModel.modeText : "Hội thoại thủ công"
                     background: Rectangle { color: modeBtn.pressed ? "#e5e6eb" : (modeBtn.hovered ? "#f2f3f5" : "#eceff3"); radius: 8 }
                     contentItem: Text { text: modeBtn.text; font.family: "PingFang SC, Microsoft YaHei UI"; font.pixelSize: 13; color: "#1d2129"; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                     onClicked: root.modeButtonClicked()
                 }
 
-                // 设置（次要）
+                // Cài đặt (màu phụ)
                 Button {
                     id: settingsBtn
                     Layout.preferredWidth: 120
                     Layout.preferredHeight: 40
-                    text: "参数配置"
+                    text: "Cấu hình tham số"
                     background: Rectangle { color: settingsBtn.pressed ? "#e5e6eb" : (settingsBtn.hovered ? "#f2f3f5" : "#eceff3"); radius: 8 }
                     contentItem: Text { text: settingsBtn.text; font.family: "PingFang SC, Microsoft YaHei UI"; font.pixelSize: 13; color: "#1d2129"; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                     onClicked: root.settingsButtonClicked()
