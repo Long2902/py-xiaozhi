@@ -1,5 +1,5 @@
 """
-设置相关模块.
+Các mô-đun liên quan tới cấu hình.
 """
 
 from .settings_window import SettingsWindow

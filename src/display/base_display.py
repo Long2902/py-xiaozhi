@@ -6,7 +6,7 @@ from src.utils.logging_config import get_logger
 
 class BaseDisplay(ABC):
     """
-    显示接口的抽象基类.
+    Lớp cơ sở trừu tượng cho giao diện hiển thị.
     """
 
     def __init__(self):
@@ -23,41 +23,41 @@ class BaseDisplay(ABC):
         send_text_callback: Optional[Callable] = None,
     ):
         """
-        设置回调函数.
+        Thiết lập các hàm gọi lại.
         """
 
     @abstractmethod
     async def update_button_status(self, text: str):
         """
-        更新按钮状态.
+        Cập nhật trạng thái nút.
         """
 
     @abstractmethod
     async def update_status(self, status: str, connected: bool):
         """
-        更新状态文本.
+        Cập nhật văn bản trạng thái.
         """
 
     @abstractmethod
     async def update_text(self, text: str):
         """
-        更新TTS文本.
+        Cập nhật văn bản TTS.
         """
 
     @abstractmethod
     async def update_emotion(self, emotion_name: str):
         """
-        更新表情.
+        Cập nhật biểu cảm.
         """
 
     @abstractmethod
     async def start(self):
         """
-        启动显示.
+        Khởi động hiển thị.
         """
 
     @abstractmethod
     async def close(self):
         """
-        关闭显示.
+        Đóng hiển thị.
         """
