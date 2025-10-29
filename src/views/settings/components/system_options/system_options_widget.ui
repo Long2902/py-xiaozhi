@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>系统选项</string>
+   <string>Tùy chọn hệ thống</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -38,7 +38,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_client_id">
          <property name="text">
-          <string>客户端ID:</string>
+          <string>ID khách hàng:</string>
          </property>
         </widget>
        </item>
@@ -48,7 +48,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_device_id">
          <property name="text">
-          <string>设备ID:</string>
+          <string>ID thiết bị:</string>
          </property>
         </widget>
        </item>
@@ -58,7 +58,7 @@
        <item row="2" column="0">
         <widget class="QLabel" name="label_ota_url">
          <property name="text">
-          <string>OTA版本URL:</string>
+          <string>URL phiên bản OTA:</string>
          </property>
         </widget>
        </item>
@@ -68,7 +68,7 @@
        <item row="3" column="0">
         <widget class="QLabel" name="label_websocket_url">
          <property name="text">
-          <string>WebSocket URL:</string>
+          <string>URL WebSocket:</string>
          </property>
         </widget>
        </item>
@@ -78,7 +78,7 @@
        <item row="4" column="0">
         <widget class="QLabel" name="label_websocket_token">
          <property name="text">
-          <string>WebSocket Token:</string>
+          <string>Mã thông báo WebSocket:</string>
          </property>
         </widget>
        </item>
@@ -92,7 +92,7 @@
        <item row="5" column="0">
         <widget class="QLabel" name="label_authorization_url">
          <property name="text">
-          <string>授权URL:</string>
+          <string>URL uỷ quyền:</string>
          </property>
         </widget>
        </item>
@@ -102,7 +102,7 @@
        <item row="6" column="0">
         <widget class="QLabel" name="label_activation_version">
          <property name="text">
-          <string>激活版本:</string>
+          <string>Phiên bản kích hoạt:</string>
          </property>
         </widget>
        </item>
@@ -123,27 +123,27 @@
        <item row="7" column="0">
         <widget class="QLabel" name="label_aec_enabled">
          <property name="text">
-          <string>启用AEC回声消除:</string>
+          <string>Bật khử vọng AEC:</string>
          </property>
         </widget>
        </item>
        <item row="7" column="1">
         <widget class="QCheckBox" name="aec_enabled_check">
          <property name="text">
-          <string>启用</string>
+          <string>Bật</string>
          </property>
         </widget>
        </item>
        <item row="8" column="0" colspan="2">
         <widget class="QGroupBox" name="mqtt_group">
          <property name="title">
-          <string>MQTT配置</string>
+          <string>Cấu hình MQTT</string>
          </property>
          <layout class="QFormLayout" name="mqtt_form">
           <item row="0" column="0">
            <widget class="QLabel" name="label_mqtt_endpoint">
             <property name="text">
-             <string>端点:</string>
+             <string>Điểm cuối:</string>
             </property>
            </widget>
           </item>
@@ -153,7 +153,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_mqtt_client_id">
             <property name="text">
-             <string>客户端ID:</string>
+             <string>ID khách hàng:</string>
             </property>
            </widget>
           </item>
@@ -163,7 +163,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_mqtt_username">
             <property name="text">
-             <string>用户名:</string>
+             <string>Tên người dùng:</string>
             </property>
            </widget>
           </item>
@@ -173,7 +173,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_mqtt_password">
             <property name="text">
-             <string>密码:</string>
+             <string>Mật khẩu:</string>
             </property>
            </widget>
           </item>
@@ -187,7 +187,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="label_mqtt_publish_topic">
             <property name="text">
-             <string>发布主题:</string>
+             <string>Chủ đề xuất bản:</string>
             </property>
            </widget>
           </item>
@@ -197,7 +197,7 @@
           <item row="5" column="0">
            <widget class="QLabel" name="label_mqtt_subscribe_topic">
             <property name="text">
-             <string>订阅主题:</string>
+             <string>Chủ đề đăng ký:</string>
             </property>
            </widget>
           </item>

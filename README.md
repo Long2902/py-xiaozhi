@@ -132,6 +132,21 @@ py-xiaozhi 是一个使用 Python 实现的小智语音客户端，旨在通过�
 
 [从零开始使用小智客户端（视频教程）](https://www.bilibili.com/video/BV1dWQhYEEmq/?vd_source=2065ec11f7577e7107a55bbdc3d12fce)
 
+### Windows 安装常见问题（特别是 `numpy` 构建失败）
+
+在 Windows 环境执行 `pip install -r requirements.txt` 时，如果出现 `numpy` 构建失败并提示找不到 `cl.exe` 或 Visual Studio 环境（如日志中含有 “Failed to activate VS environment”），请按以下步骤排查：
+
+1. **确认 Python 版本**：本项目目前支持的 Python 版本为 3.9 - 3.12。请使用 [Python 3.12.x 官方安装包](https://www.python.org/downloads/windows/) 或 [pyenv-win](https://github.com/pyenv-win/pyenv-win) 安装管理器切换到兼容版本，再重新创建虚拟环境。
+2. **安装 Microsoft C++ Build Tools**：访问 [Visual Studio Build Tools 下载页面](https://visualstudio.microsoft.com/visual-cpp-build-tools/)，安装“使用 C++ 的桌面开发”工作负载，并确保勾选 `MSVC v143`、`Windows 10/11 SDK`。安装完成后重启终端，使 `cl.exe` 生效。
+3. **使用官方二进制轮子**：安装依赖时加上 `--prefer-binary` 参数，避免在本地编译 `numpy`：
+   ```bash
+   pip install --upgrade pip
+   pip install --prefer-binary -r requirements.txt
+   ```
+4. **清理缓存重试**：若仍然失败，删除 `%TEMP%\pip-install-*` 缓存目录，或在命令中添加 `--no-cache-dir` 重新安装。
+
+按照以上步骤通常可以解决 Windows 下缺少编译器导致的依赖安装问题。
+
 ## 技术架构
 
 ### 核心架构设计
