@@ -1,7 +1,7 @@
-# Components包 - GUI组件模块
+# Gói Components - mô-đun các thành phần GUI
 """
-Components模块包含可复用的GUI组件
-- system_tray: 系统托盘组件
+Mô-đun Components chứa những thành phần GUI có thể tái sử dụng
+- system_tray: thành phần khay hệ thống
 """
 
 __version__ = "1.0.0"

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-GUI 显示窗口数据模型 - 用于 QML 数据绑定.
+Mô hình dữ liệu của cửa sổ hiển thị GUI - dùng cho liên kết dữ liệu QML.
 """
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal
@@ -8,10 +8,10 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal
 
 class GuiDisplayModel(QObject):
     """
-    GUI 主窗口的数据模型，用于 Python 和 QML 之间的数据绑定.
+    Mô hình dữ liệu của cửa sổ chính GUI cho liên kết giữa Python và QML.
     """
 
-    # 属性变化信号
+    # Tín hiệu thay đổi thuộc tính
     statusTextChanged = pyqtSignal()
     emotionPathChanged = pyqtSignal()
     ttsTextChanged = pyqtSignal()
@@ -19,28 +19,28 @@ class GuiDisplayModel(QObject):
     modeTextChanged = pyqtSignal()
     autoModeChanged = pyqtSignal()
 
-    # 用户操作信号
+    # Tín hiệu thao tác của người dùng
     manualButtonPressed = pyqtSignal()
     manualButtonReleased = pyqtSignal()
     autoButtonClicked = pyqtSignal()
     abortButtonClicked = pyqtSignal()
     modeButtonClicked = pyqtSignal()
-    sendButtonClicked = pyqtSignal(str)  # 携带输入的文本
+    sendButtonClicked = pyqtSignal(str)  # Kèm văn bản người dùng nhập
     settingsButtonClicked = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # 私有属性
-        self._status_text = "状态: 未连接"
-        self._emotion_path = ""  # 表情资源路径（GIF/图片）或 emoji 字符
-        self._tts_text = "待命"
-        self._button_text = "开始对话"  # 自动模式按钮文本
-        self._mode_text = "手动对话"  # 模式切换按钮文本
-        self._auto_mode = False  # 是否自动模式
+        # Thuộc tính riêng
+        self._status_text = "Trạng thái: Chưa kết nối"
+        self._emotion_path = ""  # Đường dẫn biểu cảm (GIF/hình ảnh) hoặc ký tự emoji
+        self._tts_text = "Sẵn sàng"
+        self._button_text = "Bắt đầu hội thoại"  # Văn bản nút chế độ tự động
+        self._mode_text = "Hội thoại thủ công"  # Văn bản nút chuyển chế độ
+        self._auto_mode = False  # Có đang ở chế độ tự động hay không
         self._is_connected = False
 
-    # 状态文本属性
+    # Thuộc tính văn bản trạng thái
     @pyqtProperty(str, notify=statusTextChanged)
     def statusText(self):
         return self._status_text
@@ -51,7 +51,7 @@ class GuiDisplayModel(QObject):
             self._status_text = value
             self.statusTextChanged.emit()
 
-    # 表情路径属性
+    # Thuộc tính đường dẫn biểu cảm
     @pyqtProperty(str, notify=emotionPathChanged)
     def emotionPath(self):
         return self._emotion_path
@@ -62,7 +62,7 @@ class GuiDisplayModel(QObject):
             self._emotion_path = value
             self.emotionPathChanged.emit()
 
-    # TTS 文本属性
+    # Thuộc tính văn bản TTS
     @pyqtProperty(str, notify=ttsTextChanged)
     def ttsText(self):
         return self._tts_text
@@ -73,7 +73,7 @@ class GuiDisplayModel(QObject):
             self._tts_text = value
             self.ttsTextChanged.emit()
 
-    # 自动模式按钮文本属性
+    # Thuộc tính văn bản nút chế độ tự động
     @pyqtProperty(str, notify=buttonTextChanged)
     def buttonText(self):
         return self._button_text
@@ -84,7 +84,7 @@ class GuiDisplayModel(QObject):
             self._button_text = value
             self.buttonTextChanged.emit()
 
-    # 模式切换按钮文本属性
+    # Thuộc tính văn bản nút chuyển chế độ
     @pyqtProperty(str, notify=modeTextChanged)
     def modeText(self):
         return self._mode_text
@@ -95,7 +95,7 @@ class GuiDisplayModel(QObject):
             self._mode_text = value
             self.modeTextChanged.emit()
 
-    # 自动模式标志属性
+    # Thuộc tính cờ chế độ tự động
     @pyqtProperty(bool, notify=autoModeChanged)
     def autoMode(self):
         return self._auto_mode
@@ -106,44 +106,44 @@ class GuiDisplayModel(QObject):
             self._auto_mode = value
             self.autoModeChanged.emit()
 
-    # 便捷方法
+    # Phương thức tiện ích
     def update_status(self, status: str, connected: bool):
         """
-        更新状态文本和连接状态.
+        Cập nhật văn bản trạng thái và tình trạng kết nối.
         """
-        self.statusText = f"状态: {status}"
+        self.statusText = f"Trạng thái: {status}"
         self._is_connected = connected
 
     def update_text(self, text: str):
         """
-        更新 TTS 文本.
+        Cập nhật văn bản TTS.
         """
         self.ttsText = text
 
     def update_emotion(self, emotion_path: str):
         """
-        更新表情路径.
+        Cập nhật đường dẫn biểu cảm.
         """
         self.emotionPath = emotion_path
 
     def update_button_text(self, text: str):
         """
-        更新自动模式按钮文本.
+        Cập nhật văn bản nút chế độ tự động.
         """
         self.buttonText = text
 
     def update_mode_text(self, text: str):
         """
-        更新模式按钮文本.
+        Cập nhật văn bản nút chuyển chế độ.
         """
         self.modeText = text
 
     def set_auto_mode(self, is_auto: bool):
         """
-        设置自动模式.
+        Thiết lập chế độ tự động.
         """
         self.autoMode = is_auto
         if is_auto:
-            self.modeText = "自动对话"
+            self.modeText = "Hội thoại tự động"
         else:
-            self.modeText = "手动对话"
+            self.modeText = "Hội thoại thủ công"
